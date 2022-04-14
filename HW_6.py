@@ -122,10 +122,22 @@ def renaming(f_link):
     return new_name
 
 
+def rename_remaining_folders(main_folder): #  нормалізувати назву папок що залишилися після сортуваня
+
+    tree, folders_list = (get_files_tree_from(main_folder))
+    folders_list.sort(reverse=True)
+
+    for folder in folders_list:
+        norm_folder_name = normalize(folder.name)
+        new_folder = folder.replace(Path(folder.parent, norm_folder_name))
+
+    return None
+
+
 def sorting_files_to_folders(tree, known_file_extension, main_folder):
 
     users_files_known_extension = set()
-    unknown_file_extension = []
+    unknown_file_extension = set()
 
     files_lists = {
                     'archives': [],
@@ -174,11 +186,12 @@ def sorting_files_to_folders(tree, known_file_extension, main_folder):
 
             else:
                 files_lists['unknown'].append(file_location.name)
-                unknown_file_extension.append(file_suffix)
+                unknown_file_extension.add(file_suffix)
 
-    delete_empty_folders(main_folder)    # видалити всі пусті папки
+    delete_empty_folders(main_folder)       # видалити всі пусті папки
+    rename_remaining_folders(main_folder)   # перейменувати папки що залишилися
 
-    return files_lists, list(users_files_known_extension), unknown_file_extension
+    return files_lists, list(users_files_known_extension), list(unknown_file_extension)
 
 known_file_extension = {
                         'archives': ['.zip', '.gz', '.tar'],
@@ -193,7 +206,7 @@ try:
     main_folder_path = Path(sys.argv[1])
 
     if main_folder_path.is_dir():
-        print(f'Your parent folder is: {main_folder_path}')
+        print(f'\nYour parent folder is: {main_folder_path}\n')
 
     else:
         raise Exception("This path doesn't exist.")
@@ -208,9 +221,10 @@ sorted_files_lists, known_file_ext, unknown_file_ext = sorting_files_to_folders(
 
 
 
-print('\n--------- Список файлів у кожній категорії ---------')
+print('\n--------- Список файлів у кожній категорії ---------\n')
 for categoty, files in sorted_files_lists.items():
-    print(f'{categoty}\n{files}\n')
+    files.sort()
+    print(f'{categoty}\n{files}\n\n')
 
 print(f'\n----------- Список відомих розширень ------------\n{known_file_ext}')
 print(f'\n----------- Список невідомих розширень ----------\n{unknown_file_ext}')
