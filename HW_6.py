@@ -193,38 +193,47 @@ def sorting_files_to_folders(tree, known_file_extension, main_folder):
 
     return files_lists, list(users_files_known_extension), list(unknown_file_extension)
 
-known_file_extension = {
-                        'archives': ['.zip', '.gz', '.tar'],
-                        'audio': ['.mp3', '.ogg', '.wav', '.amr'],
-                        'documents': ['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx'],
-                        'images': ['.jpeg', '.png', '.jpg', '.svg'],
-                        'video': ['.avi', '.mp4', '.mov', '.mkv']
-                        }
-
-# Приймаємо аргумент і перевіряєм чи це дійсно шлях на папку
-try:
-    main_folder_path = Path(sys.argv[1])
-
-    if main_folder_path.is_dir():
-        print(f'\nYour parent folder is: {main_folder_path}\n')
-
-    else:
-        raise Exception("This path doesn't exist.")
-
-except IndexError:
-    print('No argument.')
-
-
-tree, folders_list = (get_files_tree_from(main_folder_path))
-
-sorted_files_lists, known_file_ext, unknown_file_ext = sorting_files_to_folders(tree, known_file_extension, main_folder_path)
 
 
 
-print('\n--------- Список файлів у кожній категорії ---------\n')
-for categoty, files in sorted_files_lists.items():
-    files.sort()
-    print(f'{categoty}\n{files}\n\n')
+def cleaning():
+    
+    known_file_extension = {
+                            'archives': ['.zip', '.gz', '.tar'],
+                            'audio': ['.mp3', '.ogg', '.wav', '.amr'],
+                            'documents': ['.doc', '.docx', '.txt', '.pdf', '.xlsx', '.pptx'],
+                            'images': ['.jpeg', '.png', '.jpg', '.svg'],
+                            'video': ['.avi', '.mp4', '.mov', '.mkv']
+                            }
 
-print(f'\n----------- Список відомих розширень ------------\n{known_file_ext}')
-print(f'\n----------- Список невідомих розширень ----------\n{unknown_file_ext}')
+    # Приймаємо аргумент і перевіряєм чи це дійсно шлях на папку
+    try:
+        main_folder_path = Path(sys.argv[1])
+
+        if main_folder_path.is_dir():
+            print(f'\nYour parent folder is: {main_folder_path}\n')
+
+        else:
+            raise Exception("This path doesn't exist.")
+
+    except IndexError:
+        print('No argument.')
+
+
+    tree, folders_list = (get_files_tree_from(main_folder_path))
+
+    sorted_files_lists, known_file_ext, unknown_file_ext = sorting_files_to_folders(tree, known_file_extension, main_folder_path)
+
+    
+    
+    print('\n--------- Список файлів у кожній категорії ---------\n')
+    for categoty, files in sorted_files_lists.items():
+        files.sort()
+        print(f'{categoty}\n{files}\n\n')
+
+    print(f'\n----------- Список відомих розширень ------------\n{known_file_ext}')
+    print(f'\n----------- Список невідомих розширень ----------\n{unknown_file_ext}')
+
+
+if __name__ == '__main__':
+    cleaning()
